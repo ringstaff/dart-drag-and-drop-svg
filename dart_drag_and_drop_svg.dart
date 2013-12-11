@@ -10,7 +10,7 @@ class BasicUnit {
   bool dragging;
   num dragOffsetX, dragOffsetY, width, height;
   
-  var onMouseUpListener;
+  var onMouseUpListener, onMouseMoveListener, onMouseLeaveListener;
   
   BasicUnit(SvgSvgElement this.canvas, num x, num y, num this.width, num this.height) {
     body = new RectElement();
@@ -21,9 +21,7 @@ class BasicUnit {
     body.classes.add('processing_body');
     
     body.onMouseDown.listen(select);
-    canvas.onMouseMove.listen(moveStarted);
-    canvas.onMouseUp.listen(moveCompleted);
-    canvas.onMouseLeave.listen(moveCompleted);
+
     
     group = new GElement();
     group.append(body);
@@ -34,7 +32,9 @@ class BasicUnit {
   void select(MouseEvent e) {
     e.preventDefault();
     dragging = true;
-//    onMouseUpListener = body.onMouseUp.listen(moveCompleted);
+    onMouseUpListener = canvas.onMouseUp.listen(moveCompleted);
+    onMouseMoveListener = canvas.onMouseMove.listen(moveStarted);
+    onMouseLeaveListener = canvas.onMouseLeave.listen(moveCompleted);
     
     var mouseCoordinates = getMouseCoordinates(e);
     dragOffsetX = mouseCoordinates['x'] - body.getCtm().e; //double.parse(body.attributes['x']);
@@ -54,7 +54,9 @@ class BasicUnit {
   
   void moveCompleted(MouseEvent e) {
     e.preventDefault();
-//    onMouseUpListener.cancel();
+    onMouseUpListener.cancel();
+    onMouseMoveListener.cancel();
+    onMouseLeaveListener.cancel();
     dragging = false;
   }
   
