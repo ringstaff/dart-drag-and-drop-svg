@@ -10,8 +10,9 @@ class BasicUnit {
   bool dragging;
   num dragOffsetX, dragOffsetY, width, height;
   
+  var onMouseUpListener;
+  
   BasicUnit(SvgSvgElement this.canvas, num x, num y, num this.width, num this.height) {
-    
     body = new RectElement();
     body.setAttribute('x', '$x');
     body.setAttribute('y', '$y');
@@ -21,7 +22,7 @@ class BasicUnit {
     
     body.onMouseDown.listen(select);
     canvas.onMouseMove.listen(moveStarted);
-    body.onMouseUp.listen(moveCompleted);
+    canvas.onMouseUp.listen(moveCompleted);
     canvas.onMouseLeave.listen(moveCompleted);
     
     group = new GElement();
@@ -33,6 +34,7 @@ class BasicUnit {
   void select(MouseEvent e) {
     e.preventDefault();
     dragging = true;
+//    onMouseUpListener = body.onMouseUp.listen(moveCompleted);
     
     var mouseCoordinates = getMouseCoordinates(e);
     dragOffsetX = mouseCoordinates['x'] - body.getCtm().e; //double.parse(body.attributes['x']);
@@ -52,12 +54,15 @@ class BasicUnit {
   
   void moveCompleted(MouseEvent e) {
     e.preventDefault();
+//    onMouseUpListener.cancel();
     dragging = false;
   }
   
   dynamic getMouseCoordinates(e) {
-    return {'x': (e.offset.x - this.canvas.currentTranslate.x)/this.canvas.currentScale, 
-            'y': (e.offset.y - this.canvas.currentTranslate.y)/this.canvas.currentScale};
+    return {
+      'x': (e.offset.x - canvas.currentTranslate.x) / canvas.currentScale, 
+      'y': (e.offset.y - canvas.currentTranslate.y) / canvas.currentScale
+    };
   }
 }
 
@@ -73,15 +78,15 @@ class Application {
   SvgSvgElement canvas;
   
   Application(canvas_id) {
-    this.canvas = document.querySelector(canvas_id);
-    this.canvas.onDoubleClick.listen((MouseEvent e) => addNewUnit(e));
+    canvas = querySelector(canvas_id);
+    canvas.onDoubleClick.listen(addNewUnit);
   }
   
   void addNewUnit(MouseEvent e) {
     num x = e.offset.x - WIDTH/2;
     num y = e.offset.y - HEIGHT/2;
     BasicUnit newUnit = new BasicUnit(this.canvas, x, y, WIDTH, HEIGHT);
-    this.canvas.append(newUnit.group);
+    canvas.append(newUnit.group);
   }
 }
 
