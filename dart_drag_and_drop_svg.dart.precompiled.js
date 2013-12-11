@@ -6012,11 +6012,38 @@ main: function() {
   t2._tryResume$0();
 },
 
-BasicUnit: {"": "Object;canvas,group,body,dragging,dragOffsetX,dragOffsetY,width,height,onMouseUpListener",
+BasicUnit: {"": "Object;canvas,group,body,dragging,dragOffsetX,dragOffsetY,width,height,onMouseUpListener,onMouseMoveListener,onMouseLeaveListener",
   select$1: function(_, e) {
-    var mouseCoordinates;
+    var t1, t2, mouseCoordinates;
     J.preventDefault$0$x(e);
     this.dragging = true;
+    t1 = this.canvas;
+    t1.toString;
+    t1 = new W._ElementEventStreamImpl(t1, C.EventStreamProvider_mouseup._eventType, false);
+    H.setRuntimeTypeInfo(t1, [null]);
+    t2 = this.get$moveCompleted();
+    t2 = new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(t2), t1._useCapture);
+    H.setRuntimeTypeInfo(t2, [H.getRuntimeTypeArgument(t1, "_EventStream", 0)]);
+    t2._tryResume$0();
+    this.onMouseUpListener = t2;
+    t2 = this.canvas;
+    t2.toString;
+    t2 = new W._ElementEventStreamImpl(t2, C.EventStreamProvider_mousemove._eventType, false);
+    H.setRuntimeTypeInfo(t2, [null]);
+    t1 = this.get$moveStarted();
+    t1 = new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(t1), t2._useCapture);
+    H.setRuntimeTypeInfo(t1, [H.getRuntimeTypeArgument(t2, "_EventStream", 0)]);
+    t1._tryResume$0();
+    this.onMouseMoveListener = t1;
+    t1 = this.canvas;
+    t1.toString;
+    t1 = new W._ElementEventStreamImpl(t1, C.EventStreamProvider_mouseleave._eventType, false);
+    H.setRuntimeTypeInfo(t1, [null]);
+    t2 = this.get$moveCompleted();
+    t2 = new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(t2), t1._useCapture);
+    H.setRuntimeTypeInfo(t2, [H.getRuntimeTypeArgument(t1, "_EventStream", 0)]);
+    t2._tryResume$0();
+    this.onMouseLeaveListener = t2;
     mouseCoordinates = this.getMouseCoordinates$1(e);
     this.dragOffsetX = J.$sub$n(mouseCoordinates.$index(mouseCoordinates, "x"), J.getCtm$0$x(this.body).e);
     this.dragOffsetY = J.$sub$n(mouseCoordinates.$index(mouseCoordinates, "y"), J.getCtm$0$x(this.body).f);
@@ -6039,6 +6066,9 @@ BasicUnit: {"": "Object;canvas,group,body,dragging,dragOffsetX,dragOffsetY,width
   },
   moveCompleted$1: function(e) {
     J.preventDefault$0$x(e);
+    this.onMouseUpListener.cancel$0();
+    this.onMouseMoveListener.cancel$0();
+    this.onMouseLeaveListener.cancel$0();
     this.dragging = false;
   },
   get$moveCompleted: function() {
@@ -6086,37 +6116,13 @@ BasicUnit: {"": "Object;canvas,group,body,dragging,dragOffsetX,dragOffsetY,width
     t2 = new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(t2), t1._useCapture);
     H.setRuntimeTypeInfo(t2, [H.getRuntimeTypeArgument(t1, "_EventStream", 0)]);
     t2._tryResume$0();
-    t2 = this.canvas;
-    t2.toString;
-    t2 = new W._ElementEventStreamImpl(t2, C.EventStreamProvider_mousemove._eventType, false);
-    H.setRuntimeTypeInfo(t2, [null]);
-    t1 = this.get$moveStarted();
-    t1 = new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(t1), t2._useCapture);
-    H.setRuntimeTypeInfo(t1, [H.getRuntimeTypeArgument(t2, "_EventStream", 0)]);
-    t1._tryResume$0();
-    t1 = this.canvas;
-    t1.toString;
-    t1 = new W._ElementEventStreamImpl(t1, C.EventStreamProvider_mouseup._eventType, false);
-    H.setRuntimeTypeInfo(t1, [null]);
-    t2 = this.get$moveCompleted();
-    t2 = new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(t2), t1._useCapture);
-    H.setRuntimeTypeInfo(t2, [H.getRuntimeTypeArgument(t1, "_EventStream", 0)]);
-    t2._tryResume$0();
-    t2 = this.canvas;
-    t2.toString;
-    t2 = new W._ElementEventStreamImpl(t2, C.EventStreamProvider_mouseleave._eventType, false);
-    H.setRuntimeTypeInfo(t2, [null]);
-    t1 = this.get$moveCompleted();
-    t1 = new W._EventStreamSubscription(0, t2._target, t2._eventType, W._wrapZone(t1), t2._useCapture);
-    H.setRuntimeTypeInfo(t1, [H.getRuntimeTypeArgument(t2, "_EventStream", 0)]);
-    t1._tryResume$0();
     this.group = document.createElementNS("http://www.w3.org/2000/svg", "g");
     this.group.appendChild(this.body);
     this.dragging = false;
   },
   static: {
 BasicUnit$: function(canvas, x, y, width, height) {
-  var t1 = new O.BasicUnit(canvas, null, null, null, null, null, width, height, null);
+  var t1 = new O.BasicUnit(canvas, null, null, null, null, null, width, height, null, null, null);
   t1.BasicUnit$5(canvas, x, y, width, height);
   return t1;
 }}
@@ -11413,7 +11419,7 @@ function dart_precompiled($collectedClasses) {
   if ($desc instanceof Array)
     $desc = $desc[1];
   TypedData_ListMixin_FixedLengthListMixin.prototype = $desc;
-  function BasicUnit(canvas, group, body, dragging, dragOffsetX, dragOffsetY, width, height, onMouseUpListener) {
+  function BasicUnit(canvas, group, body, dragging, dragOffsetX, dragOffsetY, width, height, onMouseUpListener, onMouseMoveListener, onMouseLeaveListener) {
     this.canvas = canvas;
     this.group = group;
     this.body = body;
@@ -11423,6 +11429,8 @@ function dart_precompiled($collectedClasses) {
     this.width = width;
     this.height = height;
     this.onMouseUpListener = onMouseUpListener;
+    this.onMouseMoveListener = onMouseMoveListener;
+    this.onMouseLeaveListener = onMouseLeaveListener;
   }
   BasicUnit.builtin$cls = "BasicUnit";
   if (!"name" in BasicUnit)
